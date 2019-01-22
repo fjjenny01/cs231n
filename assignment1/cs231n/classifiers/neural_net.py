@@ -67,7 +67,7 @@ class TwoLayerNet(object):
     W1, b1 = self.params['W1'], self.params['b1']
     W2, b2 = self.params['W2'], self.params['b2']
     N, D = X.shape
-
+    
     # Compute the forward pass
     scores = None
     #############################################################################
@@ -75,7 +75,9 @@ class TwoLayerNet(object):
     # Store the result in the scores variable, which should be an array of      #
     # shape (N, C).                                                             #
     #############################################################################
-    pass
+    h1 = np.maximum(0, X.dot(W1) + b1)
+    scores = h1.dot(W2) + b2
+    
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -92,7 +94,17 @@ class TwoLayerNet(object):
     # in the variable loss, which should be a scalar. Use the Softmax           #
     # classifier loss.                                                          #
     #############################################################################
-    pass
+    scores -=  np.max(scores)
+    scores = np.exp(scores)
+ 
+    score_expsum = np.sum(scores, axis=1)    
+    correct_exp = scores[range(N), y]
+    prob_no_norm = correct_exp / score_expsum
+  
+    loss = -np.sum(np.log(prob_no_norm))/N 
+    loss += reg * np.sum(W1 * W1)
+    loss += reg * np.sum(W2 * W2)
+    
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
